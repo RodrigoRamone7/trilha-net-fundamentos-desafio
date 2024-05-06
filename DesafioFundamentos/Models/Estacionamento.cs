@@ -1,10 +1,15 @@
+using DesafioFundamentos.Models;
 namespace DesafioFundamentos.Models
 {
     public class Estacionamento
     {
+        private DateTime _horaAtual = new DateTime();
         private decimal precoInicial = 0;
         private decimal precoPorHora = 0;
-        private List<string> veiculos = new List<string>();
+        private Dictionary<string, int> veiculos = new Dictionary<string, int>();
+
+        
+
 
         public Estacionamento(decimal precoInicial, decimal precoPorHora)
         {
@@ -18,7 +23,8 @@ namespace DesafioFundamentos.Models
             // Implementado
             Console.WriteLine("Digite a placa do veículo para estacionar:");
             string placa = Console.ReadLine();
-            veiculos.Add(placa);
+            DateTime horaChegada = DateTime.Now;
+            veiculos.Add(placa.ToUpper(), horaChegada.Hour);
         }
 
         public void RemoverVeiculo()
@@ -31,15 +37,14 @@ namespace DesafioFundamentos.Models
             placa = Console.ReadLine();
 
             // Verifica se o veículo existe
-            if (veiculos.Any(x => x.ToUpper() == placa.ToUpper()))
+            if (VerificaCarroExiste(placa))
             {
-                Console.WriteLine("Digite a quantidade de horas que o veículo permaneceu estacionado:");
 
                 // TODO: Pedir para o usuário digitar a quantidade de horas que o veículo permaneceu estacionado,
                 // TODO: Realizar o seguinte cálculo: "precoInicial + precoPorHora * horas" para a variável valorTotal                
                 // Implementado
-                int horas = 0;
-                horas = Convert.ToInt32(Console.ReadLine());
+                DateTime horaAtual = DateTime.Now;
+                int horas = veiculos[placa.ToUpper()] - horaAtual.Hour;
                 decimal valorTotal = 0;
                 valorTotal = precoInicial + (precoPorHora * horas);
 
@@ -63,15 +68,23 @@ namespace DesafioFundamentos.Models
                 Console.WriteLine("Os veículos estacionados são:");
                 // TODO: Realizar um laço de repetição, exibindo os veículos estacionados
                 // Implementado
-                for (int i = 0; i < veiculos.Count(); i++)
+                foreach (var veiculo in veiculos)
                 {
-                    Console.WriteLine(veiculos[i]);
+                    Console.WriteLine($"Placa: {veiculo.Key.ToString()} Hora de chegada: {veiculo.Value.ToString()}Hrs");
                 }
             }
             else
             {
                 Console.WriteLine("Não há veículos estacionados.");
             }
+        }
+        private bool VerificaCarroExiste(string placa)
+        {
+            if (veiculos.ContainsKey(placa.ToUpper()))
+            {
+                return true;
+            }
+            else { return false; }
         }
     }
 }
